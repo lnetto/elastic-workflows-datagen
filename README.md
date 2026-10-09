@@ -14,16 +14,17 @@ feed every five minutes.
 ## Install
 
 1. In Kibana, **Workflows -> Create workflow**, paste [`loader.yaml`](loader.yaml), save.
-2. That's it: `wdg-loader` runs as soon as it is saved, installs the
-   integrations above and every generator workflow, and the generators start
-   producing data right away.
+2. `wdg-loader` runs as soon as it is saved: it installs the integrations
+   above and every generator workflow, **switched off**.
+3. Switch on the generators you want (Workflows -> toggle). Each produces a
+   batch every five minutes from then on.
 
 `wdg-loader` checks this repo every hour and updates any workflow whose YAML
-changed here. To stop a generator, disable its workflow; the loader keeps it
-disabled.
+changed here. A generator you switched on stays on through updates; one you
+left off stays off.
 
 This repo is build output: the workflows are compiled from generator sources
 by `python -m wdg publish`. Edits made here directly are overwritten on the
 next publish.
 
-Generated 2026-10-09 15:04 UTC.
+Generated 2026-10-09 20:20 UTC.

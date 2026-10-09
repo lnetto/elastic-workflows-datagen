@@ -3,7 +3,7 @@ description: >-
   Installs and updates the wdg data generator workflows published in
   github.com/lnetto/elastic-workflows-datagen (main): installs the integrations its index.json
   lists, then creates each workflow, or updates it when the published
-  YAML has changed (a workflow disabled here stays disabled). Runs
+  YAML has changed. Generators arrive off; one switched on here stays on. Runs
   every 60m; run it by hand after a publish to pick changes up now.
 enabled: true
 tags: [wdg]
@@ -82,19 +82,19 @@ steps:
           method: GET
           path: "/api/workflows/workflow/{{ foreach.item.id }}"
 
-      # Kibana takes `enabled` from the YAML, not the request, so a
-      # workflow disabled on the cluster stays disabled by rewriting
-      # the published YAML's header line
+      # Generators are published `enabled: false`. Kibana takes
+      # `enabled` from the YAML, not the request, so one switched on
+      # in the cluster stays on by rewriting that header line
       - name: desired
         type: data.set
         with:
           yml: "${{ steps.fetch.output.data }}"
 
-      - name: keep_disabled
+      - name: keep_enabled
         type: data.set
-        if: "${{ steps.current.error == nil and steps.current.output.enabled == false }}"
+        if: "${{ steps.current.error == nil and steps.current.output.enabled == true }}"
         with:
-          yml: "${{ steps.fetch.output.data | replace_first: 'enabled: true', 'enabled: false' }}"
+          yml: "${{ steps.fetch.output.data | replace_first: 'enabled: false', 'enabled: true' }}"
 
       # a failure here (say, a concurrent run created it first) must
       # not stop the rest of the sync

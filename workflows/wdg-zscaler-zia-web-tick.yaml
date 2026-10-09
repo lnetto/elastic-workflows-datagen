@@ -10,7 +10,7 @@ description: 'Generates Zscaler ZIA web data every 5 minutes into logs-zscaler_z
   with SSL inspection (finance and health bypassed), acceptable-use category blocks, malware
   and phishing blocks on random DGA-style domains, DLP and cloud-app-control blocks on uploads
   to personal storage. NSS v11 JSON web feed, parsed by the Elastic Zscaler ZIA integration.'
-enabled: true
+enabled: false
 
 triggers:
   - type: scheduled

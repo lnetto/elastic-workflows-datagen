@@ -9,7 +9,7 @@ description: 'Generates Cisco ASA data every 5 minutes into logs-cisco_asa.log-d
   (%ASA-) in the vendor''s own format: NAT''d outbound sessions with xlate build/teardown,
   inbound DMZ traffic, scanner sweeps, threat detection, VPN sessions and password spraying,
   admin activity. Parsed by the Elastic Cisco ASA integration.'
-enabled: true
+enabled: false
 
 triggers:
   - type: scheduled

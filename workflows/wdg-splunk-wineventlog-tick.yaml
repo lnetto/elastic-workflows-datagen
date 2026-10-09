@@ -11,7 +11,7 @@ description: 'Generates Windows event logs (Splunk classic WinEventLog) data eve
   with their Kerberos tickets and logoffs, process creation, file share access, service churn,
   crashes, patch reboots, password spraying and admin activity. Parsed into Splunk TA fields
   and ECS/winlog by the workflow''s own ingest pipeline.'
-enabled: true
+enabled: false
 
 triggers:
   - type: scheduled
