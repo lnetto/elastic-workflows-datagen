@@ -82,9 +82,10 @@ steps:
           method: GET
           path: "/api/workflows/workflow/{{ foreach.item.id }}"
 
-      # Generators are published `enabled: false`. Kibana takes
-      # `enabled` from the YAML, not the request, so one switched on
-      # in the cluster stays on by rewriting that header line
+      # Generators are published switched off. Kibana takes on/off
+      # from the YAML, not the request, so one switched on in the
+      # cluster stays on by flipping that header line (generators
+      # only: the loader's own YAML is left exactly as published)
       - name: desired
         type: data.set
         with:
@@ -92,7 +93,7 @@ steps:
 
       - name: keep_enabled
         type: data.set
-        if: "${{ steps.current.error == nil and steps.current.output.enabled == true }}"
+        if: "${{ steps.current.error == nil and steps.current.output.enabled == true and foreach.item.kind != 'loader' }}"
         with:
           yml: "${{ steps.fetch.output.data | replace_first: 'enabled: false', 'enabled: true' }}"
 

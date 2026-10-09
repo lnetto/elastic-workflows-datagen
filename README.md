@@ -27,4 +27,4 @@ This repo is build output: the workflows are compiled from generator sources
 by `python -m wdg publish`. Edits made here directly are overwritten on the
 next publish.
 
-Generated 2026-10-09 20:20 UTC.
+Generated 2026-10-09 20:22 UTC.
