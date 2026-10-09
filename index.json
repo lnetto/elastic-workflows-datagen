@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-09 14:20 UTC",
+  "generated": "2026-10-09 15:04 UTC",
   "repo": "lnetto/elastic-workflows-datagen",
   "ref": "main",
   "integrations": [
@@ -14,34 +14,16 @@
       "kind": "tick"
     },
     {
-      "id": "wdg-cisco-asa-backfill",
-      "file": "workflows/wdg-cisco-asa-backfill.yaml",
-      "generator": "cisco_asa",
-      "kind": "backfill"
-    },
-    {
       "id": "wdg-splunk-wineventlog-tick",
       "file": "workflows/wdg-splunk-wineventlog-tick.yaml",
       "generator": "splunk_wineventlog",
       "kind": "tick"
     },
     {
-      "id": "wdg-splunk-wineventlog-backfill",
-      "file": "workflows/wdg-splunk-wineventlog-backfill.yaml",
-      "generator": "splunk_wineventlog",
-      "kind": "backfill"
-    },
-    {
       "id": "wdg-zscaler-zia-web-tick",
       "file": "workflows/wdg-zscaler-zia-web-tick.yaml",
       "generator": "zscaler_zia_web",
       "kind": "tick"
-    },
-    {
-      "id": "wdg-zscaler-zia-web-backfill",
-      "file": "workflows/wdg-zscaler-zia-web-backfill.yaml",
-      "generator": "zscaler_zia_web",
-      "kind": "backfill"
     },
     {
       "id": "wdg-loader",
