@@ -3,7 +3,7 @@ description: >-
   Installs and updates the wdg data generator workflows published at
   https://raw.githubusercontent.com/lnetto/elastic-workflows-datagen/main. Reads index.json there, installs the integrations it lists,
   then creates each workflow or updates it when the published YAML has
-  changed (keeping its enabled state). Runs every 60m; run it by hand
+  changed (a workflow disabled here stays disabled). Runs every 60m; run it by hand
   after a publish to pick changes up now.
 enabled: true
 tags: [wdg]
@@ -60,6 +60,20 @@ steps:
           method: GET
           path: "/api/workflows/workflow/{{ foreach.item.id }}"
 
+      # Kibana takes `enabled` from the YAML, not the request, so a
+      # workflow disabled on the cluster stays disabled by rewriting
+      # the published YAML's header line
+      - name: desired
+        type: data.set
+        with:
+          yml: "${{ steps.fetch.output.data }}"
+
+      - name: keep_disabled
+        type: data.set
+        if: "${{ steps.current.error == nil and steps.current.output.enabled == false }}"
+        with:
+          yml: "${{ steps.fetch.output.data | replace_first: 'enabled: true', 'enabled: false' }}"
+
       # a failure here (say, a concurrent run created it first) must
       # not stop the rest of the sync
       - name: create
@@ -72,18 +86,17 @@ steps:
           path: /api/workflows/workflow
           body:
             id: "{{ foreach.item.id }}"
-            yaml: "${{ steps.fetch.output.data }}"
+            yaml: "${{ variables.yml }}"
 
       - name: update
         type: kibana.request
         on-failure:
           continue: true
-        if: "${{ steps.current.error == nil and steps.current.output.yaml != steps.fetch.output.data }}"
+        if: "${{ steps.current.error == nil and steps.current.output.yaml != variables.yml }}"
         with:
           method: PUT
           path: "/api/workflows/workflow/{{ foreach.item.id }}"
           body:
             name: "{{ foreach.item.id }}"
-            enabled: "${{ steps.current.output.enabled }}"
             tags: [wdg]
-            yaml: "${{ steps.fetch.output.data }}"
+            yaml: "${{ variables.yml }}"
