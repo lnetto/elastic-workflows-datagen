@@ -60,8 +60,12 @@ steps:
           method: GET
           path: "/api/workflows/workflow/{{ foreach.item.id }}"
 
+      # a failure here (say, a concurrent run created it first) must
+      # not stop the rest of the sync
       - name: create
         type: kibana.request
+        on-failure:
+          continue: true
         if: "${{ steps.current.error != nil }}"
         with:
           method: POST
@@ -72,6 +76,8 @@ steps:
 
       - name: update
         type: kibana.request
+        on-failure:
+          continue: true
         if: "${{ steps.current.error == nil and steps.current.output.yaml != steps.fetch.output.data }}"
         with:
           method: PUT

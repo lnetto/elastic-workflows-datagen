@@ -14,8 +14,9 @@ feed every five minutes, plus history on demand.
 ## Install
 
 1. In Kibana, **Workflows -> Create workflow**, paste [`loader.yaml`](loader.yaml), save.
-2. Run `wdg-loader` once. It installs the integrations above and every
-   generator workflow; the `-tick` workflows start producing data right away.
+2. That's it: `wdg-loader` runs as soon as it is saved, installs the
+   integrations above and every generator workflow, and the `-tick`
+   workflows start producing data right away.
 3. For history, run any `*-backfill` workflow by hand.
 
 `wdg-loader` checks this repo every hour and updates any workflow whose YAML
@@ -26,4 +27,4 @@ This repo is build output: the workflows are compiled from generator sources
 by `python -m wdg publish`. Edits made here directly are overwritten on the
 next publish.
 
-Generated 2026-10-09 14:16 UTC.
+Generated 2026-10-09 14:17 UTC.
