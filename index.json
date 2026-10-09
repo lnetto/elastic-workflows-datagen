@@ -1,6 +1,7 @@
 {
-  "generated": "2026-10-09 14:18 UTC",
-  "base": "https://raw.githubusercontent.com/lnetto/elastic-workflows-datagen/main",
+  "generated": "2026-10-09 14:20 UTC",
+  "repo": "lnetto/elastic-workflows-datagen",
+  "ref": "main",
   "integrations": [
     "cisco_asa",
     "zscaler_zia"

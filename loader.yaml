@@ -1,10 +1,10 @@
 name: wdg-loader
 description: >-
-  Installs and updates the wdg data generator workflows published at
-  https://raw.githubusercontent.com/lnetto/elastic-workflows-datagen/main. Reads index.json there, installs the integrations it lists,
-  then creates each workflow or updates it when the published YAML has
-  changed (a workflow disabled here stays disabled). Runs every 60m; run it by hand
-  after a publish to pick changes up now.
+  Installs and updates the wdg data generator workflows published in
+  github.com/lnetto/elastic-workflows-datagen (main): installs the integrations its index.json
+  lists, then creates each workflow, or updates it when the published
+  YAML has changed (a workflow disabled here stays disabled). Runs
+  every 60m; run it by hand after a publish to pick changes up now.
 enabled: true
 tags: [wdg]
 
@@ -15,14 +15,36 @@ triggers:
       every: 60m
 
 consts:
-  base: https://raw.githubusercontent.com/lnetto/elastic-workflows-datagen/main
+  repo: lnetto/elastic-workflows-datagen
+  ref: main
 
 steps:
+  # Pin this run to one commit: raw.githubusercontent.com caches a
+  # branch URL for minutes, per edge, so index.json and the files it
+  # lists could come from different commits. A commit URL never
+  # changes. Without the API (60 calls/hour unauthenticated), fall back
+  # to the branch.
+  - name: head
+    type: http
+    on-failure:
+      continue: true
+    with:
+      method: GET
+      url: "https://api.github.com/repos/{{ consts.repo }}/git/ref/heads/{{ consts.ref }}"
+      headers:
+        Accept: application/vnd.github+json
+        User-Agent: wdg-loader
+
+  - name: pin
+    type: data.set
+    with:
+      base: "https://raw.githubusercontent.com/{{ consts.repo }}/{% if steps.head.error == nil %}{{ steps.head.output.data.object.sha }}{% else %}{{ consts.ref }}{% endif %}"
+
   - name: index
     type: http
     with:
       method: GET
-      url: "{{ consts.base }}/index.json"
+      url: "{{ variables.base }}/index.json"
 
   - name: parse
     type: data.set
@@ -50,7 +72,7 @@ steps:
         type: http
         with:
           method: GET
-          url: "{{ consts.base }}/{{ foreach.item.file }}"
+          url: "{{ variables.base }}/{{ foreach.item.file }}"
 
       - name: current
         type: kibana.request
