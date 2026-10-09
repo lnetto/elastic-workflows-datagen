@@ -1,0 +1,52 @@
+{
+  "generated": "2026-10-09 14:16 UTC",
+  "base": "https://raw.githubusercontent.com/lnetto/elastic-workflows-datagen/main",
+  "integrations": [
+    "cisco_asa",
+    "zscaler_zia"
+  ],
+  "workflows": [
+    {
+      "id": "wdg-cisco-asa-tick",
+      "file": "workflows/wdg-cisco-asa-tick.yaml",
+      "generator": "cisco_asa",
+      "kind": "tick"
+    },
+    {
+      "id": "wdg-cisco-asa-backfill",
+      "file": "workflows/wdg-cisco-asa-backfill.yaml",
+      "generator": "cisco_asa",
+      "kind": "backfill"
+    },
+    {
+      "id": "wdg-splunk-wineventlog-tick",
+      "file": "workflows/wdg-splunk-wineventlog-tick.yaml",
+      "generator": "splunk_wineventlog",
+      "kind": "tick"
+    },
+    {
+      "id": "wdg-splunk-wineventlog-backfill",
+      "file": "workflows/wdg-splunk-wineventlog-backfill.yaml",
+      "generator": "splunk_wineventlog",
+      "kind": "backfill"
+    },
+    {
+      "id": "wdg-zscaler-zia-web-tick",
+      "file": "workflows/wdg-zscaler-zia-web-tick.yaml",
+      "generator": "zscaler_zia_web",
+      "kind": "tick"
+    },
+    {
+      "id": "wdg-zscaler-zia-web-backfill",
+      "file": "workflows/wdg-zscaler-zia-web-backfill.yaml",
+      "generator": "zscaler_zia_web",
+      "kind": "backfill"
+    },
+    {
+      "id": "wdg-loader",
+      "file": "loader.yaml",
+      "generator": null,
+      "kind": "loader"
+    }
+  ]
+}

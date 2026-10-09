@@ -1,0 +1,83 @@
+name: wdg-loader
+description: >-
+  Installs and updates the wdg data generator workflows published at
+  https://raw.githubusercontent.com/lnetto/elastic-workflows-datagen/main. Reads index.json there, installs the integrations it lists,
+  then creates each workflow or updates it when the published YAML has
+  changed (keeping its enabled state). Runs every 60m; run it by hand
+  after a publish to pick changes up now.
+enabled: true
+tags: [wdg]
+
+triggers:
+  - type: manual
+  - type: scheduled
+    with:
+      every: 60m
+
+consts:
+  base: https://raw.githubusercontent.com/lnetto/elastic-workflows-datagen/main
+
+steps:
+  - name: index
+    type: http
+    with:
+      method: GET
+      url: "{{ consts.base }}/index.json"
+
+  - name: parse
+    type: data.set
+    with:
+      idx: "${{ steps.index.output.data | json_parse }}"
+
+  - name: integrations
+    type: foreach
+    foreach: "${{ variables.idx.integrations }}"
+    steps:
+      - name: install_integration
+        type: kibana.request
+        on-failure:
+          continue: true
+        with:
+          method: POST
+          path: "/api/fleet/epm/packages/{{ foreach.item }}"
+          body: {}
+
+  - name: sync
+    type: foreach
+    foreach: "${{ variables.idx.workflows }}"
+    steps:
+      - name: fetch
+        type: http
+        with:
+          method: GET
+          url: "{{ consts.base }}/{{ foreach.item.file }}"
+
+      - name: current
+        type: kibana.request
+        on-failure:
+          continue: true
+        with:
+          method: GET
+          path: "/api/workflows/workflow/{{ foreach.item.id }}"
+
+      - name: create
+        type: kibana.request
+        if: "${{ steps.current.error != nil }}"
+        with:
+          method: POST
+          path: /api/workflows/workflow
+          body:
+            id: "{{ foreach.item.id }}"
+            yaml: "${{ steps.fetch.output.data }}"
+
+      - name: update
+        type: kibana.request
+        if: "${{ steps.current.error == nil and steps.current.output.yaml != steps.fetch.output.data }}"
+        with:
+          method: PUT
+          path: "/api/workflows/workflow/{{ foreach.item.id }}"
+          body:
+            name: "{{ foreach.item.id }}"
+            enabled: "${{ steps.current.output.enabled }}"
+            tags: [wdg]
+            yaml: "${{ steps.fetch.output.data }}"
